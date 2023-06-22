@@ -11,24 +11,20 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { CircularProgress } from '@mui/material';
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { CircularProgress } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { signin } from "../redux/usersSlice";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
-
 export default function SignIn() {
-  const users = useSelector((state) => state.users);
   const status = useSelector((state) => state.users.status);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (status === 'fulfilled') {
-      navigate('/', { replace: true })
-    }
+    if (status === "fulfilled") {navigate("/", { replace: true })}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   const [isChecked, setIsChecked] = useState(false);
@@ -36,14 +32,10 @@ export default function SignIn() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // console.log({
-    //   email: data.get('email'),
-    //   password: data.get('password'),
-    // });
     let userObj = {
       email: data.get("email"),
       password: data.get("password"),
-      isRemember: isChecked
+      isRemember: isChecked,
     };
 
     dispatch(signin(userObj));
@@ -104,12 +96,7 @@ export default function SignIn() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            {status === "pending" ? (
-              'Please Wait ' 
-              // <CircularProgress />
-            ) : (
-              "Sign In"
-            )}
+            {status === "pending" ? <CircularProgress /> : "Sign In"}
           </Button>
           <Grid container>
             <Grid item xs>

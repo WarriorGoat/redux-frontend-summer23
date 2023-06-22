@@ -21,8 +21,6 @@ export const signin = createAsyncThunk(
   async (userData, thunkAPI) => {
     try {
       let response = await Axios.post("/users/signin", userData);
-      //see if remember me box is checked
-
       //   userData.isRemember &&
       localStorage.setItem("jwtToken", response.data.token);
       //dispatch authSuccess with Thunk API
@@ -51,24 +49,23 @@ export const usersSlice = createSlice({
         password: "",
       };
     },
-    resetStatus:(state)=>{
-        state.status='null'
+    resetStatus: (state) => {
+      state.status = "null";
     },
-    resetUser: (state)=>{
-        return {
-            email: '',
-            password: '',
-            firstname: '',
-            lastname: '',
-            message: 'User Logged Out!',
-            status: null
-        }
-    }
+    resetUser: (state) => {
+      return {
+        email: "",
+        password: "",
+        firstname: "",
+        lastname: "",
+        message: "User Logged Out!",
+        status: null,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.fulfilled, (state, action) => {
-        // console.log(action.payload);
         // whole state replacement, use a return
         // return {
         //     email: action.payload.userObj.email,
@@ -110,7 +107,7 @@ export const usersSlice = createSlice({
       .addCase(signin.rejected, (state, action) => {
         state.message = action.payload.data.message;
         state.status = "rejected";
-      })
+      });
   },
 });
 
