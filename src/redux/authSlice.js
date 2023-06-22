@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import Axios from "../lib/Axios";
 import { checkAuthToken } from "../lib/checkAuthToken"
-import { setUser } from "./usersSlice";
+import { setUser, resetUser } from "./usersSlice";
 
 export const authCheck = createAsyncThunk('auth/authCheck', async(_, thunkAPI)=>{
     try{
@@ -35,6 +35,9 @@ export const authSlice = createSlice({
                 state.isAuth=false
                 console.log("------Auth Check------")
                 console.log(action.payload)
+            })
+            .addCase(logout.fulfilled, (state, action)=>{
+                state.isAuth=false
             })
     }
 })

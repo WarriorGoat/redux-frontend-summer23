@@ -11,14 +11,26 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import { CircularProgress } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useSelector, useDispatch } from 'react-redux';
-import {registerUser} from "../redux/usersSlice"
+import {registerUser, resetStatus} from "../redux/usersSlice"
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function Register() {
 
   const users = useSelector(state => state.users)
+  const status = useSelector((state) => state.users.status);
   const dispatch = useDispatch()
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (status === 'fulfilled') {
+      dispatch(resetStatus())
+      navigate('/signin', { replace: true })
+    }
+  }, [status]);
 
   const [pwdMatch, setPwdMatch] = useState({
     error: false,
@@ -139,7 +151,12 @@ export default function Register() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Register
+              {status === "pending" ? (
+              'Please Wait '  
+              // <CircularProgress />
+            ) : (
+              "Register"
+            )}
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>

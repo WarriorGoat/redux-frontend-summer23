@@ -12,11 +12,16 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import { useSelector, useDispatch } from 'react-redux';
+import {logout} from '../redux/authSlice'
 
 const pages = ['Products', 'Cart'];
 const settings = ['Profile', 'Account', 'Logout'];
 
 function ResponsiveAppBar() {
+  const dispatch = useDispatch()
+  const auth = useSelector(state=>state.auth.isAuth)
+
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -34,6 +39,12 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const onMenuClick=()=>{
+    if (menuItem==='logout'){
+      dispatch(logout())
+    }
+  }
 
   return (
     <AppBar position="static">
@@ -125,6 +136,7 @@ function ResponsiveAppBar() {
             ))}
           </Box>
 
+        {auth && 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -149,11 +161,14 @@ function ResponsiveAppBar() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  <Typography 
+                  onClick={()=> onMenuClick(setting)}
+                  textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
+          }
         </Toolbar>
       </Container>
     </AppBar>

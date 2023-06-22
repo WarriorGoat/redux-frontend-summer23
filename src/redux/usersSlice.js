@@ -5,9 +5,11 @@ import { authSuccess } from "./authSlice";
 //thunk middleware
 //createAsyncThunk, first parameter is the action.type, then the function
 // the function takes in the payload data from the dispatch
+//registration
 export const registerUser = createAsyncThunk(
   "user/registerUser",
   async (payloadData) => {
+    //call the API/backend
     let response = await Axios.post("/users/register", payloadData);
     return response.data;
   }
@@ -19,7 +21,11 @@ export const signin = createAsyncThunk(
   async (userData, thunkAPI) => {
     try {
       let response = await Axios.post("/users/signin", userData);
+      //see if remember me box is checked
+
+      //   userData.isRemember &&
       localStorage.setItem("jwtToken", response.data.token);
+      //dispatch authSuccess with Thunk API
       thunkAPI.dispatch(authSuccess());
       return response.data;
     } catch (error) {
@@ -36,6 +42,7 @@ export const usersSlice = createSlice({
     firstname: "",
     lastname: "",
     message: "",
+    status: null,
   },
   reducers: {
     setUser: (state, action) => {
@@ -44,6 +51,19 @@ export const usersSlice = createSlice({
         password: "",
       };
     },
+    resetStatus:(state)=>{
+        state.status='null'
+    },
+    resetUser: (state)=>{
+        return {
+            email: '',
+            password: '',
+            firstname: '',
+            lastname: '',
+            message: 'User Logged Out!',
+            status: null
+        }
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -66,26 +86,34 @@ export const usersSlice = createSlice({
         return {
           ...action.payload,
           password: "",
+          status: "fulfilled",
         };
       })
-      .addCase(registerUser.rejected, () => {
+      .addCase(registerUser.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(registerUser.rejected, (state) => {
         console.log("-----registerUser Error!!-------");
+        state.status = "rejected";
       })
       .addCase(signin.fulfilled, (state, action) => {
-        console.log(action.payload)
-
         state.firstname = action.payload.user.firstname;
         state.lastname = action.payload.user.lastname;
         state.email = action.payload.user.email;
         state.message = action.payload.message;
         state.password = "";
+        state.status = "fulfilled";
+      })
+      .addCase(signin.pending, (state, action) => {
+        state.status = "pending";
       })
       .addCase(signin.rejected, (state, action) => {
         state.message = action.payload.data.message;
-      });
+        state.status = "rejected";
+      })
   },
 });
 
-export const { setUser } = usersSlice.actions;
+export const { setUser, resetStatus, resetUser } = usersSlice.actions;
 
 export default usersSlice.reducer;

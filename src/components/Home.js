@@ -1,7 +1,7 @@
 import { Box, Container, Typography, Button } from "@mui/material";
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { authCheck } from "../redux/authSlice";
+import { authCheck, logout } from "../redux/authSlice";
 
 const Home = () => {
   const dispatch=useDispatch()
@@ -20,8 +20,14 @@ const Home = () => {
             {auth ? <>Welcome {users.firstname}</> : <>Please Sign In</>}
           </Typography>
         </Box>
-        <Button variant="contained" href="/signin">Sign In</Button>
-        <Button variant="contained" href="/register">Register</Button>
+        {auth ? 
+          <Button variant="contained" onClick={()=> dispatch(logout())}>  Sign out</Button>
+        : 
+          <>
+            <Button variant="contained" href="/signin">Sign In</Button>
+            <Button variant="contained" href="/register">Register</Button>
+          </>
+        }
       </Container>
     </>
   );
