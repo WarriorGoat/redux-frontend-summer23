@@ -3,6 +3,12 @@ import Axios from "../lib/Axios";
 import { checkAuthToken } from "../lib/checkAuthToken"
 import { setUser, resetUser } from "./usersSlice";
 
+
+export const logout = createAsyncThunk('auth/logout', async(_, thunkAPI)=>{
+    await localStorage.removeItem('jwtToken')
+    thunkAPI.dispatch(resetUser())
+})
+
 export const authCheck = createAsyncThunk('auth/authCheck', async(_, thunkAPI)=>{
     try{
         checkAuthToken()

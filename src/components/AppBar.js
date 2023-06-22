@@ -41,7 +41,7 @@ function ResponsiveAppBar() {
   };
 
   const onMenuClick=()=>{
-    if (menuItem==='logout'){
+    if (MenuItem==='logout'){
       dispatch(logout())
     }
   }
